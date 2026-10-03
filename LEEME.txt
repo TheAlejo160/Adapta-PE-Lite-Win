@@ -1,0 +1,46 @@
+ADAPTA PE LITE PARA WINDOWS · 1.0
+
+Incluye asistente de voz completo y siete filtros de daltonismo.
+Conserva bandeja, panel flotante, lectura manual y controles accesibles.
+No incluye cámara, cinética, TalkBack automático ni IA externa.
+
+INSTALACIÓN
+Ejecuta AdaptaPELite-1.0-Setup-x64.exe en Windows 10/11 x64.
+Instala para tu usuario en %LOCALAPPDATA%\Programs\AdaptaPELite.
+Puedes elegir accesos directos en escritorio e Inicio.
+Incluye .NET y reconocimiento español local. No requiere SDK.
+Para actualizar/reparar, cierra Lite desde la bandeja y ejecuta su instalador.
+La edición Base mantiene su carpeta y preferencias independientes.
+
+PRIMER USO
+Primer inicio con todo apagado. Enfoca Bloc de notas o la app de destino.
+Activa Voz y di: Computadora, muestra campos.
+Puedes cambiar micrófono, motor y palabra de activación.
+Daltonismo permite elegir uno de siete filtros o Sin filtro.
+La lectura solicitada por voz utiliza accesibilidad local.
+
+DETENER / SALIR
+Detener todo apaga voz, lectura y filtro propio; recuerda estado apagado.
+Ctrl+Shift+S detiene asistencia si Windows permite registrar el atajo.
+Cerrar ajustes conserva asistencia. Salir conserva preferencias.
+Inicio con Windows es optativo, desde Ayuda.
+
+PRIVACIDAD
+Preferencias: %LOCALAPPDATA%\AdaptaPELite.
+No guarda audio, transcripciones ni capturas. No envía audio a una API.
+SAPI instalado o Vosk local incluido; no hay IA externa ni telemetría.
+Las búsquedas abren el sitio web y comparten la consulta con él.
+Base y Lite comparten exclusión de filtros: activa sólo uno a la vez.
+
+ESTADO Y COMPATIBILIDAD
+Compilación cruzada y pruebas portables no acreditan ejecución en Windows.
+Micrófono, filtros, UIA, instalación y rendimiento requieren prueba real.
+Principal: net10.0-windows. Legacy separado: net48 y net461.
+No usar el instalador moderno para Windows 7/8/8.1 ni ARM64.
+Los paquetes Legacy necesitan su .NET Framework correspondiente.
+Windows 10 Home/Pro 22H2 no se declara oficialmente soportado por .NET 10.
+No desactives SmartScreen, antivirus ni UAC. Instalador sin firma Authenticode.
+
+Código, instrucciones y límites: README.md y docs/VALIDACION-WINDOWS.md.
+© 2026 Rodrigo Alejandro Apcho Aliaga — TheAlejo160.
+CC BY-NC-SA 4.0; componentes de terceros bajo sus licencias propias.

@@ -1,0 +1,16 @@
+{
+  "source": "AdaptaPELite.png",
+  "sha256": "8a0b7047c15b3a013a1ebd1f9412fe6fdd9cff67aa457a2d43d15cb3abed173b",
+  "logo": "logo.png",
+  "icon": "AdaptaPELite.ico",
+  "icon_sizes": [
+    16,
+    24,
+    32,
+    48,
+    64,
+    128,
+    256
+  ],
+  "note": "PNG original del usuario, conservado íntegro con transparencia. ICO transparente y BMP compuestos sobre el fondo del instalador."
+}
