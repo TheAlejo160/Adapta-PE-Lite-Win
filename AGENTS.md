@@ -54,6 +54,8 @@ Añadir archivos sólo cuando una funcionalidad los necesite. MVVM sencillo cuan
 
 ### Voz y comandos
 
+- Commands.Prepare normaliza cortesía y conjugaciones sin alterar el contenido del dictado, selección literal o consultas API. Conservar el catálogo existente y su gramática finita. Las partículas ambiguas finales pe/pues/ya pe/ya pues requieren coma para no truncar nombres o consultas. Añadir regresiones de compatibilidad al ampliar verbos; no resolver cadenas del corpus con excepciones aisladas.
+
 - Una captura/reconocedor por sesión activa. Inicio, parada y recuperación serializados; cancelación o generación descarta callbacks anteriores. Apagar durante el arranque nunca debe reactivar un módulo.
 - Palabra predeterminada «Computadora», personalizable; señal de disponibilidad y ventana de ocho segundos entre activación y orden. Mantenerla entre reinicios de reconocimiento y cambios de ventana.
 - Enumerar con `InstalledRecognizers()` los motores españoles realmente disponibles. Preferir el idioma del usuario y variantes españolas instaladas; no asumir `es-PE` disponible. Verificar gramática de órdenes y dictado. `System.Speech` usa referencia Framework en Legacy y paquete Microsoft compatible en moderno.
@@ -134,3 +136,11 @@ Una entrega está terminada cuando el comportamiento solicitado funciona en los 
 
 - Base y Lite muestran versión pública `1.0`, definida en `Version` del proyecto y leída del atributo informativo por MainWindow/PiP. No volver a mantener números literales independientes en la UI.
 - `FileVersion` es revisión técnica de cuatro componentes, actualmente `1.0.3.0`. NSIS recibe `VERSION` público y `FILE_VERSION` técnico; registra DisplayVersion y BuildVersion por separado. Comparar revisión técnica y conservar fallback para instalaciones anteriores y EXE propio, incluidos los cuatro componentes. No retirar protección de downgrade para renombrar una entrega.
+
+## Mascotas y paridad de escritorio (2026-10-11)
+
+`Core/Mascot.cs` contiene secuencias/parser; `Windows/Mascot.cs` mantiene únicamente el atlas elegido y un temporizador por duración original. Los recursos locales están en `assets/mascotas/`; conservarlos en build/publish. Mantener comandos completos para no interceptar búsquedas o dictado, callbacks TTS actuales, arrastre/teclado, DPI, monitor/posición relativa y suspensión. Lite incluye mascota, voz y filtros; no copiar motores cinéticos o IA. Las siete matrices y los límites de pantalla completa siguen documentados en README. La comprobación en macOS compila las tres variantes; no acredita ejecución Windows.
+
+## Panel y actividad de mascota (2026-10-11)
+
+Reutilizar `FloatingWindow`, `Preferences` y `Mascot`; no añadir otro motor. PiP tiene arrastre nativo, posición normalizada por monitor, esquinas y pie fijo de emergencia. `MascotLinked` une los movimientos y reserva 164 puntos adaptados al DPI; separar recupera coordenadas propias de la mascota. Menú y voz pasan por el mismo parser. No escribir preferencias por cada frame del arrastre; guardar al terminar. Animar laptop/teléfono una vez y lectura/habla durante TTS real. Un temporizador de inactividad de 90 segundos duerme y detiene animación; distinguir sueño manual y automático y mantener TTS activo sin descanso automático. Lógica portable no acredita WPF, DPI mixto, sensores o juegos en Windows real.

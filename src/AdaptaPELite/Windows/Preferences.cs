@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using Microsoft.Win32;
@@ -10,6 +11,10 @@ namespace AdaptaPE.Windows
     public sealed class Preferences
     {
         [DataMember] public string WakeWord="Computadora",Filter="ninguno",Corner="Inferior derecha",Monitor="";
+        [DataMember] public string Mascot="ninguna",MascotMonitor="";
+        [DataMember] public double MascotX=.75,MascotY=.8,PanelX,PanelY;
+        [DataMember] public bool MascotLinked,PanelFree;
+
         [DataMember] public int Microphone=-1;
         [DataMember] public string SpeechEngine="auto";
         [DataMember] public bool VoiceActive=false,Floating=false,Login=false;
@@ -20,6 +25,12 @@ namespace AdaptaPE.Windows
             try{if(!File.Exists(FilePath))return new Preferences();using(var s=File.OpenRead(FilePath)) {
                 var p=(Preferences)new DataContractJsonSerializer(typeof(Preferences)).ReadObject(s);
                 if(p==null)throw new InvalidDataException();
+                if(!AdaptaPE.Core.MascotCommand.Names.Contains(p.Mascot))p.Mascot="ninguna";
+                if(double.IsNaN(p.MascotX)||double.IsInfinity(p.MascotX)||p.MascotX<0||p.MascotX>1)p.MascotX=.75;
+                if(double.IsNaN(p.MascotY)||double.IsInfinity(p.MascotY)||p.MascotY<0||p.MascotY>1)p.MascotY=.8;
+                if(double.IsNaN(p.PanelX)||double.IsInfinity(p.PanelX)||p.PanelX<0||p.PanelX>1)p.PanelX=.5;
+                if(double.IsNaN(p.PanelY)||double.IsInfinity(p.PanelY)||p.PanelY<0||p.PanelY>1)p.PanelY=.5;
+                p.Monitor=p.Monitor??"";p.MascotMonitor=p.MascotMonitor??"";
                 if(string.IsNullOrWhiteSpace(p.WakeWord))p.WakeWord="Computadora";
                 if(p.WakeWord.Length>40)p.WakeWord="Computadora";
                 if(p.Microphone < -1)p.Microphone=-1;

@@ -1,5 +1,11 @@
 # Validación de Adapta PE Lite para Windows
 
+## Bloque de comandos: 17 de octubre de 2026
+
+421 comprobaciones portables aprobadas: cortesía/conjugaciones, idempotencia, dictado y selección literal, negaciones, comandos históricos, puntuación tras muletillas, siglas PE en nombres, activación predeterminada y personal, expiración de ocho segundos, posiciones Unicode y reloj inválido. No se usó micrófono ni API real. Lite conserva sus exclusiones de cámara, cinética, TalkBack automático e IA.
+
+Compilación cruzada desde macOS de net10.0-windows, net48 y net461 con SDK temporal oficial 10.0.402: cero errores y cero advertencias. Esto no acredita WPF, reconocimiento de voz, filtros ni instalación en Windows real. No se regeneró el instalador.
+
 Fecha: 3 de octubre de 2026. Derivación de Base Windows 1.0.1; versión Lite 1.0.0. Preparación en macOS con SDK .NET 10.0.401 y NSIS 3.13. Una compilación cruzada no ejecuta WPF ni acredita funcionamiento de Windows.
 
 ## Evidencia disponible

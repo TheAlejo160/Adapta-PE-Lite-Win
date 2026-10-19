@@ -12,6 +12,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AssemblyName>AdaptaPELite</AssemblyName>
     <Version>1.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <FileVersion>1.0.3.0</FileVersion>
     <Product>Adapta PE Lite</Product>
     <Description>Asistente de voz y filtros de daltonismo para Windows</Description>
@@ -22,6 +23,7 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="../../assets/mascotas/*.png;../../assets/mascotas/*.json" Link="mascotas/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../../assets/models/speech/**" Link="models/speech/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Resource Include="../../assets/brand/*.png" Link="brand/%(Filename)%(Extension)" />
     <Resource Include="../../assets/brand/AdaptaPELite.ico" Link="brand/AdaptaPELite.ico" />

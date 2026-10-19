@@ -2,11 +2,59 @@
 
 # Adapta PE Lite para Windows
 
-Edición **Lite 1.0 en C# y WPF**, derivada de Adapta-PE-Win 1.0.1. Incluye dos funciones: **asistente de voz completo y siete filtros de daltonismo**, con bandeja, panel flotante, preferencias y ayuda. Conserva los principios de las versiones Lite de macOS y extensión web. Usa el logo Lite proporcionado por el autor en el ejecutable, ventanas, bandeja e instalador.
+## Comandos naturales: bloque del 17 de octubre de 2026
+
+La palabra predeterminada admite «Computadora», «Computadoras» y «Computador». Una llamada seguida sólo de cortesía mantiene la espera de ocho segundos. Las palabras personales siguen siendo independientes: elegir «Asistente» no activa esos alias. Se conserva el texto original tras la llamada, incluidos espacios interiores y Unicode; las pruebas de texto no acreditan reconocimiento con micrófono.
+
+El parser acepta cortesía y variantes españolas como «por favor abre Safari», «quiero que abras Safari», «ábrame Safari» y «abrí Safari». Conserva mayúsculas, acentos y espacios interiores del dictado. La selección literal y las consultas a la API conservan su puntuación. Se mantienen los atajos nativos existentes.
+
+Las partículas finales ambiguas «pe», «pues», «ya pe» y «ya pues» sólo se retiran si llevan una coma antes. Así «busca Adapta PE» y «busca qué significa pues» conservan su contenido. «Abre Safari, pe» se prepara como «abre Safari». Es una diferencia conservadora respecto a la extensión de referencia; no se adivina si una palabra final pertenece a un nombre o consulta.
+
+Este bloque porta reglas de texto españolas. No añade reconocimiento acústico en seis idiomas ni acredita precisión con micrófonos reales.
+
+Lite conserva sus exclusiones de cámara, cinética, TalkBack automático e IA. Las comprobaciones portables y la compilación cruzada no acreditan voz, filtros, WPF ni instalación en Windows real.
+
+Edición **Lite 1.0 independiente en C# y WPF**, derivada de Adapta-PE-Win 1.0.1. Incluye dos funciones: **asistente de voz completo y siete filtros de daltonismo**, con bandeja, panel flotante, preferencias y ayuda. Conserva los principios de las versiones Lite de macOS y extensión web. Usa el logo Lite proporcionado por el autor en el ejecutable, ventanas, bandeja e instalador.
 
 No incluye cámara, cursor cinético, clic por permanencia, TalkBack automático ni IA externa. Esos motores, modelos de visión y dependencias OpenCV no existen en este proyecto ni se compilan. La **lectura manual bajo una orden explícita** pertenece al asistente y se conserva.
 
 **Estado:** `net10.0-windows`, `net48` y `net461` compilados desde macOS; instalador NSIS generado y **343 comprobaciones** aprobadas sobre lógica y paquete publicado. El instalador pesa **95,3 MiB**, un **36,3 % menos** que el instalador Base 1.0.1 de referencia. Es una comparación de archivos, no de CPU/RAM. Resultados en [VALIDACION-WINDOWS.md](docs/VALIDACION-WINDOWS.md). Falta acreditar ejecución real de Lite, voz, filtros e instalación en Windows. El uso confirmado de Base no valida automáticamente Lite. No hay release pública.
+
+## Mascotas y mejoras compartidas · 11 de octubre de 2026
+
+Se contrastaron las extensiones completas 13.0 y Lite 3.0, sus README y los motores actuales. Las mejoras se adaptan a las APIs del escritorio; cada edición conserva sus funciones.
+
+En **Mascota**, elige **Tinku** (gallito), **Cuchu** (cuy), **Yati** (llama) o **Sin mascota**, que es el valor inicial. Sólo se decodifica el atlas elegido. Los cuadros nativos de 96×112 conservan transparencia, secuencias de entrada/salida y duración de los sprites originales. Un temporizador sigue la duración de los cuadros; otro se programa una sola vez para el descanso. No se repinta toda la interfaz. La animación se detiene al dormir, con movimiento reducido y durante suspensión. Ocultar/cambiar libera el atlas anterior.
+
+La mascota mira hacia el cursor cercano, acompaña la llamada al asistente y cambia entre hablar y leer durante la salida de voz real. **Saludar**, **Dormir** y **Despertar** permiten controlar su estado; dormir se mantiene hasta despertar. El dibujo deja pasar los clics. Arrastra su nombre entre pantallas o pulsa **Mover con teclas**, usa las flechas y vuelve con **Escape**. **Otro monitor** cambia la pantalla sin arrastrar; se recuerdan mascota, monitor y posición relativa.
+
+### Interfaz, panel y compañía
+
+Las funciones principales quedan en secciones con nombres directos. **Usar panel** abre PiP; **Opciones** permite elegir mascota, filtros, esquina y monitor. Los dispositivos y preferencias de reconocimiento permanecen bajo sus opciones avanzadas. Lite mantiene voz, filtros y lectura manual por orden; no añade cámara, cursor, TalkBack automático ni IA. **Detener todo** permanece accesible.
+
+Activa **Mover mascota y panel juntos** para situar la mascota arriba de PiP. Arrastra el título del panel o el nombre de la mascota para mover ambos. Al separarlos, la mascota recupera su posición propia. Se recuerdan unión, monitor y posición relativa del panel; cambiar de esquina vuelve al anclaje. El tamaño se limita al área útil reservando lugar para la mascota. Windows usa la barra de título nativa; Ajustes y Detener todo permanecen en un pie fijo al desplazar el contenido.
+
+La llamada por voz usa el teléfono una vez; ejecutar una orden usa la laptop una vez. Leer y hablar acompañan únicamente la salida de voz real. Después vuelve a reposo, sin dejar teléfono/laptop trabajando indefinidamente. Tras **90 segundos sin interacción**, descansa y detiene su animación. La próxima acción despierta el descanso automático; **Dormir** manual exige **Despertar**. No duerme automáticamente durante una lectura o respuesta hablada.
+
+Di **«computadora, une mascota al panel»**, **«separa mascota del panel»** o **«panel esquina superior izquierda»**. También se admite **«mueve el panel a la esquina inferior derecha»**. Cambiar posición usa los mismos límites que el arrastre y conserva el control disponible.
+
+Después de llamar al asistente, admite **«mascota Cu Chu»**, **«mascota Tinku»**, **«mascota Yaty»**, **«elige mascota tiiinku»**, **«oculta mascota»**, **«saluda mascota»**, **«duerme mascota»** y **«despierta mascota»**. Las órdenes se reconocen completas; mencionar una mascota dentro de dictado o búsqueda conserva ese texto.
+
+**Lite continúa independiente:** voz, lectura manual solicitada, siete filtros y mascota. No se añaden cámara, cursor cinético, TalkBack automático ni IA.
+
+### Pantalla completa y varios monitores
+
+En Windows 8 o posterior, [MagSetFullscreenColorEffect](https://learn.microsoft.com/en-us/windows/win32/api/magnification/nf-magnification-magsetfullscreencoloreffect) aplica la matriz a todo el escritorio, sin capturar ni copiar cada monitor. Mantiene restauración del efecto previo, comprobación de propietario y recuperación. Windows 7 conserva la capa a 10 FPS, ahora ajustada al cambiar las pantallas; no se acredita compatibilidad con juegos exclusivos en ese sistema.
+
+La mascota es una ventana superior y la entrada usa el escritorio virtual, con coordenadas negativas. Las acciones por voz dependen de los permisos, foco y controles publicados por cada app. Usa **ventana sin bordes/pantalla completa de escritorio** para juegos que no admitan capas en modo exclusivo. Algunos juegos con entrada propia o protección antitrampas pueden rechazar entrada sintética; no se eluden esas restricciones ni UAC.
+
+### Código y comprobación
+
+- [`Core/Mascot.cs`](src/AdaptaPELite/Core/Mascot.cs): atlas, secuencias y comandos independientes de la UI.
+- [`Windows/Mascot.cs`](src/AdaptaPELite/Windows/Mascot.cs): carga sólo del recurso elegido, dos ventanas, voz, posición y suspensión.
+- [`assets/mascotas/`](assets/mascotas/): sprites locales y manifiestos derivados de las extensiones.
+
+Se compilaron `net10.0-windows`, `net48` y `net461` desde macOS. Las 372 comprobaciones portables aprobaron comandos, estados/recursos de las tres mascotas, separación Lite y preferencias propias. No se ejecutó WPF en Windows ni se midieron micrófono, DPI mixto o FPS reales. El aviso NU1900 del entorno impidió consultar el catálogo de vulnerabilidades de NuGet; no se cambiaron paquetes.
 
 ## Voz y comandos: versión 1.0
 
@@ -98,7 +146,7 @@ Adapta consulta el efecto anterior, verifica si sigue controlando el actual y ev
 
 ## Panel y consumo
 
-PiP conserva interruptor de Voz, transcripción, respuesta/error, elecciones, Ajustes y Detener todo. Se ancla a esquina/monitor elegidos sin ocupar la barra de tareas ni tomar foco al aparecer. Sus controles usan el mismo motor de voz que ajustes. La bandeja permite cambiar voz/filtros, mostrar panel o salir.
+PiP conserva interruptor de Voz, transcripción, respuesta/error, elecciones, Ajustes y Detener todo. Puedes arrastrar su barra de título o elegir esquina/monitor. Guarda la posición relativa, reserva espacio para la mascota unida y conserva Ajustes/Detener todo en un pie fijo. No toma foco al aparecer. Sus controles usan el mismo motor de voz que ajustes. La bandeja permite cambiar voz/filtros, mostrar panel o salir.
 
 La UI conserva fondo Base, logo Lite, estilos WPF, foco visible, controles de al menos 44 píxeles lógicos y navegación de teclado. Hay dos páginas funcionales más Ayuda, sin controles de cámara o IA ocultos.
 
@@ -251,7 +299,11 @@ El 3 de octubre de 2026 se revisaron README, recursos y exclusiones de Git. Pasa
 | Extensión Lite | [Adapta-PE-Lite](https://github.com/TheAlejo160/Adapta-PE-Lite): voz y filtros. |
 | Windows Base | [Adapta-PE-Win](https://github.com/TheAlejo160/Adapta-PE-Win): aplicación WPF independiente. |
 | Windows Lite | [Adapta-PE-Lite-Win](https://github.com/TheAlejo160/Adapta-PE-Lite-Win): voz, lectura manual y filtros. |
-| macOS Base y Lite funcional | [Adapta-PE-MacOS-Intel-Apple-Silicon-](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-): dos proyectos Xcode que comparten motores. |
+| macOS completo | [Adapta-PE-MacOS-Intel-Apple-Silicon-](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-): sólo Adapta PE completo, con su proyecto Xcode. Lite tiene repositorio y fuentes independientes. |
 | macOS Lite independiente | [Adapta-PE-Lite-MacOS](https://github.com/TheAlejo160/Adapta-PE-Lite-MacOS): voz y siete filtros en una aplicación autónoma. |
 
 Los números de versión y permisos pertenecen a cada plataforma. Un ZIP de la extensión no instala la aplicación de escritorio. Los repositorios publican fuentes y recursos necesarios; los instaladores generados y la configuración personal quedan fuera de Git.
+
+### Paquetes locales de prueba: 17 de octubre de 2026
+
+Se recompiló net10.0-windows para win-x64 autocontenido y se generó el instalador NSIS con los recursos y licencias actuales. IncludeSourceRevisionInInformationalVersion=false conserva ProductVersion exactamente 1.0, sin sufijo Git, como exige el check de paquete; FileVersion sigue siendo 1.0.3.0. Se verificaron hashes de recursos, checks portables, integridad del archivo NSIS y correspondencia de la DLL incluida con la recién compilada. Esto no acredita instalación/desinstalación, WPF, sensores o voz en Windows. No tiene firma Authenticode.
