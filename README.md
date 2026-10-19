@@ -1,309 +1,254 @@
-<p align="center"><img src="assets/brand/logo.png" alt="Logo de Adapta PE Lite" width="180"></p>
-
 # Adapta PE Lite para Windows
 
-## Comandos naturales: bloque del 17 de octubre de 2026
+<p align="center"><img src="assets/brand/logo.png" alt="Logo de Adapta PE Lite" width="180"></p>
 
-La palabra predeterminada admite «Computadora», «Computadoras» y «Computador». Una llamada seguida sólo de cortesía mantiene la espera de ocho segundos. Las palabras personales siguen siendo independientes: elegir «Asistente» no activa esos alias. Se conserva el texto original tras la llamada, incluidos espacios interiores y Unicode; las pruebas de texto no acreditan reconocimiento con micrófono.
+Adapta PE Lite es una aplicación de escritorio independiente en C# y WPF para manejar aplicaciones por voz, dictar, leer contenido accesible bajo una orden explícita y aplicar siete filtros de color. Incluye mascotas opcionales, panel flotante y bandeja del sistema.
 
-El parser acepta cortesía y variantes españolas como «por favor abre Safari», «quiero que abras Safari», «ábrame Safari» y «abrí Safari». Conserva mayúsculas, acentos y espacios interiores del dictado. La selección literal y las consultas a la API conservan su puntuación. Se mantienen los atajos nativos existentes.
+Está pensada para quien quiere estas ayudas en un PC modesto o sin cámara. Frente a [Windows Base](https://github.com/TheAlejo160/Adapta-PE-Win), Lite elimina cámara, OpenCV, modelos de visión, cursor cinético, clic por permanencia, TalkBack automático e IA externa. Conserva el asistente completo, las acciones UI Automation y la lectura manual. Tiene menos dependencias; el ahorro real de CPU/RAM sigue sin medirse en hardware Windows. El modelo de voz Vosk sí consume memoria cuando está activo.
 
-Las partículas finales ambiguas «pe», «pues», «ya pe» y «ya pues» sólo se retiran si llevan una coma antes. Así «busca Adapta PE» y «busca qué significa pues» conservan su contenido. «Abre Safari, pe» se prepara como «abre Safari». Es una diferencia conservadora respecto a la extensión de referencia; no se adivina si una palabra final pertenece a un nombre o consulta.
+La versión pública es **1.0**; la revisión técnica del archivo es `1.0.3.0`. Este repositorio contiene fuentes y recursos: los instaladores de `artifacts/` se generan localmente y no se incluyen al clonar. La compilación cruzada y las comprobaciones portables registradas en [validación Windows](docs/VALIDACION-WINDOWS.md) no acreditan ejecución de WPF, voz, filtros ni instalación en Windows real.
 
-Este bloque porta reglas de texto españolas. No añade reconocimiento acústico en seis idiomas ni acredita precisión con micrófonos reales.
+## Elegir la compilación adecuada
 
-Lite conserva sus exclusiones de cámara, cinética, TalkBack automático e IA. Las comprobaciones portables y la compilación cruzada no acreditan voz, filtros, WPF ni instalación en Windows real.
+El [proyecto](src/AdaptaPELite/AdaptaPELite.csproj) declara tres targets y arquitectura x64 por defecto:
 
-Edición **Lite 1.0 independiente en C# y WPF**, derivada de Adapta-PE-Win 1.0.1. Incluye dos funciones: **asistente de voz completo y siete filtros de daltonismo**, con bandeja, panel flotante, preferencias y ayuda. Conserva los principios de las versiones Lite de macOS y extensión web. Usa el logo Lite proporcionado por el autor en el ejecutable, ventanas, bandeja e instalador.
+| Compilación | Windows de destino | Runtime y límites |
+| --- | --- | --- |
+| `net10.0-windows`, x64 | Windows 11; Windows 10 como objetivo de pruebas | .NET 10. El instalador moderno incluye el runtime. |
+| `net48`, x64 | Windows 7 SP1 y 8.1; vía Legacy para Windows 10 cuando corresponda | Requiere .NET Framework 4.8 instalado. Paquete separado. |
+| `net461`, x64 | Windows 8.0 histórico | Requiere .NET Framework 4.6.1, sin soporte vigente. Paquete separado. |
 
-No incluye cámara, cursor cinético, clic por permanencia, TalkBack automático ni IA externa. Esos motores, modelos de visión y dependencias OpenCV no existen en este proyecto ni se compilan. La **lectura manual bajo una orden explícita** pertenece al asistente y se conserva.
+La [matriz oficial de .NET en Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows) limita el soporte de Windows 10 a ediciones LTSC/Enterprise admitidas. No se declara soporte oficial de .NET 10 en Windows 10 Home/Pro 22H2. Revisa también los [requisitos de .NET Framework](https://learn.microsoft.com/en-us/dotnet/framework/get-started/system-requirements). La compatibilidad histórica no equivale a soporte vigente del sistema o del runtime.
 
-**Estado:** `net10.0-windows`, `net48` y `net461` compilados desde macOS; instalador NSIS generado y **343 comprobaciones** aprobadas sobre lógica y paquete publicado. El instalador pesa **95,3 MiB**, un **36,3 % menos** que el instalador Base 1.0.1 de referencia. Es una comparación de archivos, no de CPU/RAM. Resultados en [VALIDACION-WINDOWS.md](docs/VALIDACION-WINDOWS.md). Falta acreditar ejecución real de Lite, voz, filtros e instalación en Windows. El uso confirmado de Base no valida automáticamente Lite. No hay release pública.
+El instalador actual es sólo para Windows 10/11 x64. No sirve para Windows 7/8/8.1 ni acredita ARM64. El script permite compilar x86 para Windows x86, usando SAPI y sin Vosk x64; los filtros no admiten un proceso x86 bajo WOW64. ARM64 no está distribuido ni validado. Los targets Legacy compilados siguen pendientes de pruebas en sus sistemas reales.
 
-## Mascotas y mejoras compartidas · 11 de octubre de 2026
+## Instalar un paquete local
 
-Se contrastaron las extensiones completas 13.0 y Lite 3.0, sus README y los motores actuales. Las mejoras se adaptan a las APIs del escritorio; cada edición conserva sus funciones.
+Si ya dispones del paquete generado para Windows 10/11 x64:
 
-En **Mascota**, elige **Tinku** (gallito), **Cuchu** (cuy), **Yati** (llama) o **Sin mascota**, que es el valor inicial. Sólo se decodifica el atlas elegido. Los cuadros nativos de 96×112 conservan transparencia, secuencias de entrada/salida y duración de los sprites originales. Un temporizador sigue la duración de los cuadros; otro se programa una sola vez para el descanso. No se repinta toda la interfaz. La animación se detiene al dormir, con movimiento reducido y durante suspensión. Ocultar/cambiar libera el atlas anterior.
+1. Cierra Lite desde el menú de bandeja **Salir** si está abierta.
+2. Ejecuta `AdaptaPELite-1.0-Setup-x64.exe`.
+3. Revisa la ubicación y elige los accesos en escritorio e Inicio que necesites.
+4. Abre Adapta PE Lite y sigue el tutorial de abajo.
 
-La mascota mira hacia el cursor cercano, acompaña la llamada al asistente y cambia entre hablar y leer durante la salida de voz real. **Saludar**, **Dormir** y **Despertar** permiten controlar su estado; dormir se mantiene hasta despertar. El dibujo deja pasar los clics. Arrastra su nombre entre pantallas o pulsa **Mover con teclas**, usa las flechas y vuelve con **Escape**. **Otro monitor** cambia la pantalla sin arrastrar; se recuerdan mascota, monitor y posición relativa.
+Instala para tu usuario en `%LOCALAPPDATA%\Programs\AdaptaPELite`. Incluye .NET y reconocimiento español Vosk local: no necesitas SDK, extensión, Python, servidor ni cuenta. No incluye el prerrequisito Visual C++ de cámara de Base. Conserva todas las DLL y el modelo de voz del paquete.
 
-### Interfaz, panel y compañía
+El asistente ofrece instalación, actualización o reparación según la instalación encontrada. La revisión técnica bloquea downgrades aunque la versión pública siga siendo 1.0. Las actualizaciones son manuales y conservan preferencias y elección de accesos; no hay servicio de actualización ni consulta de red al iniciar.
 
-Las funciones principales quedan en secciones con nombres directos. **Usar panel** abre PiP; **Opciones** permite elegir mascota, filtros, esquina y monitor. Los dispositivos y preferencias de reconocimiento permanecen bajo sus opciones avanzadas. Lite mantiene voz, filtros y lectura manual por orden; no añade cámara, cursor, TalkBack automático ni IA. **Detener todo** permanece accesible.
+El instalador local documentado no tiene firma Authenticode. SmartScreen puede mostrar editor desconocido o una advertencia de reputación: comprueba procedencia y, si se proporciona, el hash del archivo antes de decidir si continuar. Una detección de malware o una política del equipo requiere resolver ese aviso concreto. No desactives SmartScreen, antivirus ni UAC.
 
-Activa **Mover mascota y panel juntos** para situar la mascota arriba de PiP. Arrastra el título del panel o el nombre de la mascota para mover ambos. Al separarlos, la mascota recupera su posición propia. Se recuerdan unión, monitor y posición relativa del panel; cambiar de esquina vuelve al anclaje. El tamaño se limita al área útil reservando lugar para la mascota. Windows usa la barra de título nativa; Ajustes y Detener todo permanecen en un pie fijo al desplazar el contenido.
+Para uso portable, conserva **toda la carpeta publicada** y abre `AdaptaPELite.exe`. Copiar sólo el EXE deja fuera DLL, recursos y `models/speech/`. Una publicación moderna sin runtime incluido requiere [.NET Desktop Runtime 10](https://learn.microsoft.com/en-us/dotnet/core/install/windows), que es el runtime para WPF.
 
-La llamada por voz usa el teléfono una vez; ejecutar una orden usa la laptop una vez. Leer y hablar acompañan únicamente la salida de voz real. Después vuelve a reposo, sin dejar teléfono/laptop trabajando indefinidamente. Tras **90 segundos sin interacción**, descansa y detiene su animación. La próxima acción despierta el descanso automático; **Dormir** manual exige **Despertar**. No duerme automáticamente durante una lectura o respuesta hablada.
+Desinstala desde Configuración de Windows o `Uninstall.exe` en la carpeta de instalación, después de salir de Lite. Se borran archivos conocidos y accesos propios; se conservan preferencias en `%LOCALAPPDATA%\AdaptaPELite`, archivos ajenos y runtimes compartidos. Base y Lite tienen ejecutables, instalación, preferencias y registros separados: instalar Lite no actualiza Base. Sus filtros comparten exclusión para no deshacer el efecto de la otra edición; utiliza la asistencia de una edición a la vez.
 
-Di **«computadora, une mascota al panel»**, **«separa mascota del panel»** o **«panel esquina superior izquierda»**. También se admite **«mueve el panel a la esquina inferior derecha»**. Cambiar posición usa los mismos límites que el arrastre y conserva el control disponible.
+## Compilar y ejecutar desde este repositorio
 
-Después de llamar al asistente, admite **«mascota Cu Chu»**, **«mascota Tinku»**, **«mascota Yaty»**, **«elige mascota tiiinku»**, **«oculta mascota»**, **«saluda mascota»**, **«duerme mascota»** y **«despierta mascota»**. Las órdenes se reconocen completas; mencionar una mascota dentro de dictado o búsqueda conserva ese texto.
-
-**Lite continúa independiente:** voz, lectura manual solicitada, siete filtros y mascota. No se añaden cámara, cursor cinético, TalkBack automático ni IA.
-
-### Pantalla completa y varios monitores
-
-En Windows 8 o posterior, [MagSetFullscreenColorEffect](https://learn.microsoft.com/en-us/windows/win32/api/magnification/nf-magnification-magsetfullscreencoloreffect) aplica la matriz a todo el escritorio, sin capturar ni copiar cada monitor. Mantiene restauración del efecto previo, comprobación de propietario y recuperación. Windows 7 conserva la capa a 10 FPS, ahora ajustada al cambiar las pantallas; no se acredita compatibilidad con juegos exclusivos en ese sistema.
-
-La mascota es una ventana superior y la entrada usa el escritorio virtual, con coordenadas negativas. Las acciones por voz dependen de los permisos, foco y controles publicados por cada app. Usa **ventana sin bordes/pantalla completa de escritorio** para juegos que no admitan capas en modo exclusivo. Algunos juegos con entrada propia o protección antitrampas pueden rechazar entrada sintética; no se eluden esas restricciones ni UAC.
-
-### Código y comprobación
-
-- [`Core/Mascot.cs`](src/AdaptaPELite/Core/Mascot.cs): atlas, secuencias y comandos independientes de la UI.
-- [`Windows/Mascot.cs`](src/AdaptaPELite/Windows/Mascot.cs): carga sólo del recurso elegido, dos ventanas, voz, posición y suspensión.
-- [`assets/mascotas/`](assets/mascotas/): sprites locales y manifiestos derivados de las extensiones.
-
-Se compilaron `net10.0-windows`, `net48` y `net461` desde macOS. Las 372 comprobaciones portables aprobaron comandos, estados/recursos de las tres mascotas, separación Lite y preferencias propias. No se ejecutó WPF en Windows ni se midieron micrófono, DPI mixto o FPS reales. El aviso NU1900 del entorno impidió consultar el catálogo de vulnerabilidades de NuGet; no se cambiaron paquetes.
-
-## Voz y comandos: versión 1.0
-
-Cambio de reconocimiento, micrófono o palabra de activación conserva la escucha si estaba activa. Espera a que el motor anterior libere audio/modelo; varios cambios rápidos conservan sólo el último. Detener todo durante esa espera impide el arranque pendiente. Cambiar ajustes con voz apagada no la activa.
-
-SAPI combina dictado libre con una gramática finita de comandos, palabra de activación y nombres del catálogo instalado. Prefiere un reconocedor español de la cultura del usuario cuando existe. El motor local mantiene su modelo español y dictado libre; no se ha medido una mejora de precisión acústica con micrófonos reales. Un resultado SAPI de baja confianza muestra diagnóstico y no ejecuta la orden.
-
-El parser admite más de cien frases adicionales y cortesía como «oye», «me puedes», «podrías», «quiero que», «necesito» y «hazme el favor de». Ejemplos:
-
-- «Computadora, me puedes cerrar la app Google por favor»: Google/Chrome/crom se resuelven al proceso Chrome.
-- «Computadora, cambia a Discord», «trae Chrome al frente», «muestra apps abiertas»: busca ventanas abiertas sin depender de un acceso directo. Abrir una app ya abierta enfoca su ventana; varias ventanas o coincidencias aproximadas requieren elección.
-- «Computadora, hazme un clic derecho», «abre el menú contextual», «doble clic»: clic en la aplicación de destino bajo el cursor.
-- «Computadora, léeme la pantalla», «leer la pantalla», «qué dice la pantalla», «detén la lectura»: lectura manual del contenido accesible de la ventana externa. No añade OCR ni promete leer contenido que UIA no publica.
-- «Computadora, guarda el documento», «reabre la pestaña», «muestra descargas», «ve al final», «maximiza la ventana».
-- «Computadora, apaga la voz»: detiene escucha; se reactiva mediante ajustes o PiP.
-
-Catálogo de Inicio más App Paths de HKCU/HKLM en ambas vistas del registro. Sólo abre ejecutables/accesos existentes; no acepta argumentos shell dictados. Chrome puede detectarse por registro aunque no tenga acceso de Inicio. «Abre la página de Google» elige explícitamente el sitio; «abre Google» puede enfocar/abrir Chrome si está disponible. Se conservan las 28 rutas de sitios.
-
-Nombres parecidos exigen elegir incluso si hay una sola posibilidad. Cierre conserva HWND/PID de la ventana enumerada, los revalida y solicita WM_CLOSE; no termina procesos. Un título de página que menciona Word no acredita que Chrome sea Word. Dictado conserva Unicode y texto literal; frases negadas no activan acciones por aproximación.
-
-Validación de esta actualización: comprobaciones portables y compilación cruzada desde macOS. Reconocimiento hablado, cambio de motor, ventanas reales, UIA y ejecución del instalador siguen pendientes en Windows.
-
-## Instalación y actualización
-
-En Windows 10/11 **x64**, ejecuta **`artifacts/AdaptaPELite-1.0-Setup-x64.exe`**. Instala para tu usuario en `%LOCALAPPDATA%\Programs\AdaptaPELite`, incluye .NET y el reconocimiento español local, y permite elegir accesos en escritorio e Inicio. No necesitas SDK, extensión, Python, servidor ni cuenta.
-
-El asistente muestra Windows detectado, ubicación y versión. Ofrece **Instalar**, **Actualizar** o **Reparar** según la instalación encontrada. Bloquea sustituir una versión más reciente. Conserva preferencias y elección de accesos. Cierra Lite desde su bandeja antes de actualizar o desinstalar. Las actualizaciones son manuales; no hay servicio ni consulta de red al iniciar. Lite omite el instalador Visual C++ usado por cámara en Base: las DLL de voz incluidas utilizan dependencias Windows/GCC comprobadas y no requieren ese componente.
-
-Base y Lite tienen ejecutables, accesos, carpetas, preferencias, inicio automático y registros de desinstalación separados. Instalar Lite no actualiza Base. Los filtros comparten un mutex para evitar que una edición deshaga el efecto de la otra. Conviene activar voz y filtros en una sola edición a la vez.
-
-Desinstala desde Configuración de Windows o el desinstalador de su carpeta. Se eliminan sólo archivos conocidos y accesos propios. Preferencias en `%LOCALAPPDATA%\AdaptaPELite` y archivos ajenos se conservan. Los runtimes compartidos del sistema no se eliminan.
-
-El instalador carece de firma Authenticode; Windows puede mostrar editor desconocido. No desactives SmartScreen, antivirus ni UAC. El instalador moderno no se usa en Windows 7/8/8.1 ni ARM64: esos sistemas requieren paquetes separados y pruebas.
-
-Para uso portable, conserva **toda la carpeta publicada** y ejecuta `AdaptaPELite.exe`. Un EXE aislado sin sus DLL y `models/speech/` no es el paquete completo. Las publicaciones modernas no autocontenidas necesitan [.NET Desktop Runtime 10](https://learn.microsoft.com/en-us/dotnet/core/install/windows).
-
-## Primer uso
-
-1. El primer lanzamiento deja voz, filtros e inicio con Windows apagados.
-2. Enfoca una aplicación externa, como Bloc de notas. En **Asistente de voz**, activa Voz y di **«Computadora, muestra campos»**.
-3. En **Dispositivos y reconocimiento**, elige micrófono, motor y palabra de activación. La señal del micrófono indica entrada de audio.
-4. En **Daltonismo**, elige un filtro. **Sin filtro** o **Quitar filtro** restaura el efecto anterior cuando sigue siendo el controlado por Adapta.
-5. Abre **Panel flotante · PiP** o cierra ajustes. La asistencia continúa y permanece accesible desde bandeja.
-6. **Detener todo** cancela acciones y elecciones, apaga micrófono y lectura, retira el filtro propio y recuerda asistencia apagada. **Ctrl+Shift+S** realiza la misma parada si Windows permite registrar el atajo.
-
-**Salir** conserva preferencias para otro inicio. Los módulos recordados se intentan restaurar y los fallos se muestran. Bloqueo y suspensión detienen entrada/micrófono/filtros; al volver se comprueba escritorio de usuario antes de reanudar. Inicio con Windows es voluntario desde **Ayuda**, nunca desde el instalador.
-
-## Asistente y comandos
-
-Precede cada orden con «Computadora» o el nombre elegido. Decir sólo el nombre emite una señal y abre **ocho segundos** para dar la orden. Durante lectura se admiten interrupciones explícitas. Puedes escribir una orden desde ajustes después de enfocar el destino externo.
-
-- **Aplicaciones y sitios:** «abre Bloc de notas», «abre You Tube en nueva ventana», «abre Visual Studio Code en el monitor dos», «busca movilidad en Wikipedia». Catálogo de apps local y 28 sitios/alias de Base.
-- **Cerrar por nombre:** «cierra Chrome», «cerrar la aplicación Word», «ciérrame la app Bloc de notas». Prioriza identidad del proceso, revalida ventana/PID y solicita elección ante varias ventanas o nombres aproximados. No fuerza terminación ni omite guardar cambios.
-- **Navegación y teclado:** «nueva pestaña», «regresa», «refresca la página», «cambia a la pestaña anterior», «guardar», «imprimir», «mostrar escritorio», «presiona control shift N».
-- **Campos y controles:** «muestra campos», «enfoca Nombre», «escribe Hola, José! en el campo Nombre», «selecciona Contacto», «pulsa lo seleccionado», «selecciona el texto Buenos días», «borra el campo», «clic», «clic derecho».
-- **Elecciones:** «elige dos», «la segunda», número, nombre único, «siguiente», «anterior», «cancelar». Hasta seis por página; cambian/caducan con el destino y tras 45 segundos. Una elección pendiente no exige repetir activación.
-- **Lectura manual y menús:** «lee la pantalla», «lee el botón Contacto», «muestra comandos», «ejecuta la acción Exportar PDF», «silencio». La respuesta se sintetiza localmente.
-- **Filtros:** «filtro deuteranopía», «quitar filtro». Los nombres se comparan sin distinguir acentos/mayúsculas.
-- **Aplicación:** «mostrar ajustes», «modo flotante», «panel esquina superior derecha», «detener todo», «salir de adapta».
-
-Las órdenes cinéticas, TalkBack e IA de Base responden que la función no está disponible. No se convierten en acciones sobre menús externos. «Clic derecho» inmediato sí pertenece al asistente; «siguiente clic derecho» y «cancelar clic» por permanencia no están disponibles.
-
-UI Automation depende de los controles publicados por cada aplicación. Campos protegidos quedan excluidos de lectura, selección y dictado. El dictado conserva Unicode, signos y mayúsculas recibidos del motor; Vosk suele producir texto sin capitalización/puntuación automática. No se ejecutan scripts ni comandos shell dictados.
-
-Se utilizan atajos Windows y foco comprobado. Las URLs sólo admiten HTTP/HTTPS. El navegador enfocado se usa cuando resulta compatible; la búsqueda contextual puede volver a Google. No se promete equivalencia con DOM o `chrome.tabs`. UIPI impide controlar algunas aplicaciones elevadas, UAC y escritorio seguro. No necesitas ejecutar toda Adapta como administrador.
-
-## Voz local y diagnóstico
-
-| Ajuste | Comportamiento |
-| --- | --- |
-| Nombre del asistente | `Computadora`; personalizable, de 1 a 40 caracteres |
-| Automático | SAPI español instalado; fallback al reconocimiento local incluido |
-| Local incluido | Vosk 0.3.45 y modelo español pequeño, cargados bajo demanda |
-| SAPI | Necesita reconocedor español y dictado; una voz TTS no basta |
-| Micrófono | Predeterminado de Windows o dispositivo seleccionado |
-| Inicio con Windows | Apagado; optativo en Ayuda |
-
-Una captura PCM mono de **16 kHz** por sesión. WinMM usa `CALLBACK_EVENT`, buffers en orden y almacenamiento acotado. Detener invalida callbacks anteriores. Automático cambia una vez al motor local si SAPI termina inesperadamente; no reinicia indefinidamente un reconocedor terminado. Audio y transcripciones no se guardan ni envían a una API.
-
-Si no escucha, revisa permiso del micrófono, dispositivo y señal. Prueba **Local incluido**. Si detecta la orden pero falla la acción, enfoca el destino y revisa su respuesta. Una confirmación «Orden detectada» no acredita que Windows permita ejecutarla. Si la salida TTS falla, la respuesta escrita permanece disponible.
-
-## Daltonismo
-
-Protanomalía, protanopía, deuteranomalía, deuteranopía, tritanomalía, tritanopía y acromatopsia. Conserva exactamente las matrices de Base y sus equivalentes web/macOS; son **simulaciones visuales**, no una corrección médica.
-
-Windows 8+ usa efecto global con [Magnification API](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/magapi/magapi-intro); no hay captura continua de pantalla para ese efecto. Windows 7 usa una capa de magnificación a 10 FPS, todavía pendiente de pruebas reales. El proceso debe coincidir con arquitectura nativa; x86 bajo Windows x64 no sirve para estos filtros.
-
-Adapta consulta el efecto anterior, verifica si sigue controlando el actual y evita sobrescribir cambios de otras ayudas al restaurar. Un archivo local permite intentar recuperación tras un cierre abrupto en el siguiente inicio. Si falla la retirada, el error queda visible y puedes reintentar **Detener todo**. La coexistencia con otras ayudas requiere prueba en Windows.
-
-## Panel y consumo
-
-PiP conserva interruptor de Voz, transcripción, respuesta/error, elecciones, Ajustes y Detener todo. Puedes arrastrar su barra de título o elegir esquina/monitor. Guarda la posición relativa, reserva espacio para la mascota unida y conserva Ajustes/Detener todo en un pie fijo. No toma foco al aparecer. Sus controles usan el mismo motor de voz que ajustes. La bandeja permite cambiar voz/filtros, mostrar panel o salir.
-
-La UI conserva fondo Base, logo Lite, estilos WPF, foco visible, controles de al menos 44 píxeles lógicos y navegación de teclado. Hay dos páginas funcionales más Ayuda, sin controles de cámara o IA ocultos.
-
-No hay OpenCV, modelos ONNX, inferencia, preview, timer de cursor, lectura automática bajo cursor ni red en reposo. Imágenes de marca congeladas y compartidas. SAPI usa recursos del sistema; Vosk carga el modelo sólo al activar ese motor y lo libera al apagar. El [catálogo Vosk](https://alphacephei.com/vosk/models) orienta consumo de modelos pequeños; no representa una medición de Lite. Bandeja y eventos de ventana/sesión permanecen disponibles con asistencia apagada.
-
-## Compatibilidad
-
-| Target | Destino y límite |
-| --- | --- |
-| `net10.0-windows`, x64 | Principal para Windows 11 y prioridad de ejecución Windows 10; instalador con runtime incluido |
-| `net48`, x64 | Legacy para Windows 7 SP1, 8.1 y cuando corresponda Windows 10; necesita .NET Framework 4.8 |
-| `net461`, x64 | Windows 8.0 histórico; necesita .NET Framework 4.6.1, sin soporte vigente |
-| x86 | Compilación opcional para Windows x86; voz SAPI, sin Vosk x64; filtros no admiten WOW64 |
-| ARM64 | No distribuido ni validado |
-
-La matriz oficial de [.NET para Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows) limita soporte Windows 10 a ediciones LTSC/Enterprise admitidas; no se declara soporte oficial .NET 10 en Home/Pro 22H2. Las compilaciones Legacy no prueban funcionamiento físico en sistemas históricos. Consulta también [requisitos de .NET Framework](https://learn.microsoft.com/en-us/dotnet/framework/get-started/system-requirements). Windows 7/8/8.1 y .NET Framework 4.6.1 no tienen soporte vigente.
-
-## Construir desde el repositorio
-
-Requisitos: SDK .NET 10, NuGet y, para instalador, **NSIS 3.13**. El usuario final recibe un paquete autocontenido; no necesita SDK. Código fuente: [TheAlejo160/Adapta-PE-Lite-Win](https://github.com/TheAlejo160/Adapta-PE-Lite-Win). Los instaladores de `artifacts/` se generan localmente y no se incluyen al clonar. La publicación de fuentes no acredita ejecución Windows ni una release instalable validada.
-
-Desde la raíz, en PowerShell:
-
-```powershell
-./scripts/checks.ps1
-./scripts/build.ps1
-./scripts/build.ps1 -SelfContained
-./scripts/build.ps1 -Framework net48
-./scripts/build.ps1 -Framework net461
-./scripts/installer.ps1 -MakeNsis "C:/Program Files (x86)/NSIS/makensis.exe"
-```
-
-`build.ps1` produce `artifacts/<framework>-<runtime>/`. `installer.ps1` publica en `artifacts/net10.0-windows-win-x64-contained/`, conserva licencias del runtime y genera la lista específica de desinstalación. El instalador queda en `artifacts/AdaptaPELite-1.0-Setup-x64.exe`. No hay instalador Legacy acreditado. Los permisos y dispositivos no se activan durante compilación.
-
-También puedes usar directamente:
-
-```powershell
-dotnet build src/AdaptaPELite/AdaptaPELite.csproj -c Release
-dotnet run --project tests/AdaptaPELite.Checks -c Release
-dotnet publish src/AdaptaPELite/AdaptaPELite.csproj -f net10.0-windows -c Release -r win-x64 --self-contained true -o artifacts/net10.0-windows-win-x64-contained
-dotnet run --project tests/AdaptaPELite.Checks -c Release -- artifacts/net10.0-windows-win-x64-contained
-# Sólo Windows: abre ajustes y deja la aplicación abierta.
-./scripts/check-startup.ps1 -Executable ./artifacts/net10.0-windows-win-x64-contained/AdaptaPELite.exe
-# Sólo Windows: exige 30 segundos de escucha y apaga Voz al terminar.
-./scripts/check-voice.ps1
-```
-
-Las comprobaciones cubren parser, alias, cierre por proceso, dictado Unicode, navegación, activación y TTS, contrato de audio continuo, resultados Vosk, matrices e índices inválidos, identidad/preferencias Lite y rechazo de funciones excluidas. Con carpeta publicada inspeccionan los tipos del ensamblado sin ejecutar WPF, el modelo español y ausencia de OpenCV/ONNX. No activan sensores ni usan servicios.
-
-```text
-src/AdaptaPELite/
-  App.cs, MainWindow.cs, Theme.cs   WPF, bandeja, panel y ciclo de vida
-  Core/                           Parser, sitios, alias, activación, audio y matrices
-  Windows/                        SAPI/Vosk/WinMM, UIA manual, Win32, filtros y preferencias
-assets/brand/                     Logo Lite original, ICO y fondo Base
-assets/models/speech/             Modelo español y manifiesto de procedencia/hashes
-assets/speech-runtime/            Vosk x64 y licencias
-assets/installer/                 BMP Lite y licencias NSIS
-scripts/                         Compilación, instalador y comprobaciones Windows
-tests/AdaptaPELite.Checks/         Lógica portable y exclusiones de ensamblado/paquete
-```
-
-El código es independiente: no depende de que Base permanezca en una carpeta hermana. Conserva los motores existentes con recortes específicos, sin nuevas abstracciones, servidores ni frameworks visuales. [AGENTS.md](AGENTS.md) replica los contratos de Base adaptados al alcance Lite; [memoria de código](docs/MEMORIA-CODIGO.md) describe el índice y sus límites.
-
-### Clonar, compilar e instalar desde PowerShell
-
-En Windows 10/11 x64 con WinGet disponible, instala Git y el **SDK** .NET 10 si faltan. Abre otra terminal después de instalarlos para actualizar el PATH. Si WinGet no está disponible, utiliza los instaladores oficiales de Git y [.NET](https://learn.microsoft.com/en-us/dotnet/core/install/windows).
-
-```powershell
-winget install --id Git.Git --exact
-winget install --id Microsoft.DotNet.SDK.10 --exact
-```
+Haz estos pasos en Windows, desde PowerShell. Necesitas Git y el **SDK .NET 10**, no sólo el runtime. La última compilación cruzada descrita en la documentación usó SDK **10.0.402**; no hay un `global.json` que fije ese parche. Descarga el SDK de la [página oficial de .NET 10](https://dotnet.microsoft.com/en-us/download/dotnet/10.0). La restauración necesita acceso a NuGet o una caché completa.
 
 ```powershell
 git clone https://github.com/TheAlejo160/Adapta-PE-Lite-Win.git
 Set-Location Adapta-PE-Lite-Win
 dotnet --info
 dotnet restore src/AdaptaPELite/AdaptaPELite.csproj
-./scripts/checks.ps1
+dotnet build src/AdaptaPELite/AdaptaPELite.csproj -c Release -f net10.0-windows
+dotnet run --project src/AdaptaPELite/AdaptaPELite.csproj -c Release -f net10.0-windows
+```
+
+`dotnet run` abre la app de escritorio. Para Visual Studio, Microsoft indica [Visual Studio 2026 18.0 o posterior para .NET 10](https://learn.microsoft.com/en-us/dotnet/core/install/windows#net-versions-and-visual-studio). Instala la carga de trabajo de desarrollo de escritorio con .NET y abre `src/AdaptaPELite/AdaptaPELite.csproj`. La terminal permite seguir el flujo sin instalar el IDE.
+
+### Publicar una carpeta portable
+
+```powershell
 ./scripts/build.ps1 -Framework net10.0-windows -Runtime win-x64 -SelfContained
-# Ejecutar la publicación portable en Windows; conservar toda la carpeta.
 & ./artifacts/net10.0-windows-win-x64/AdaptaPELite.exe
 ```
 
-Para instalar con accesos directos y desinstalador, cierra la app desde la bandeja, instala **NSIS 3.13** y genera el instalador. Puedes comprobar su disponibilidad con `winget show --id NSIS.NSIS --exact --versions` y usar `winget install --id NSIS.NSIS --exact --version 3.13`, o descargarlo desde [NSIS](https://nsis.sourceforge.io/Download). La compilación exige `makensis` en PATH o su ruta explícita.
+`build.ps1` escribe en `artifacts/<framework>-<runtime>/`, también con `-SelfContained`. Sin ese modificador, la publicación moderna necesita Desktop Runtime 10 en el equipo de destino. Para generar las compilaciones históricas, desde un equipo de desarrollo compatible:
 
-Lite no utiliza el prerrequisito Visual C++ de cámara de Base. Conserva las DLL y el modelo de voz incluidos.
+```powershell
+./scripts/build.ps1 -Framework net48 -Runtime win-x64
+./scripts/build.ps1 -Framework net461 -Runtime win-x64
+```
+
+Legacy necesita su .NET Framework instalado en destino y no acepta `-SelfContained`. Estas carpetas no son un instalador Legacy validado.
+
+### Crear el instalador por usuario
+
+Instala NSIS 3.13 desde [NSIS](https://nsis.sourceforge.io/Download) y cierra Lite antes de probar el resultado:
 
 ```powershell
 ./scripts/installer.ps1 -MakeNsis 'C:/Program Files (x86)/NSIS/makensis.exe'
 Start-Process ./artifacts/AdaptaPELite-1.0-Setup-x64.exe -Wait
-# Después de completar el asistente de instalación:
-& "$env:LOCALAPPDATA/Programs/AdaptaPELite/AdaptaPELite.exe"
 ```
 
-Para actualizar las fuentes, usa `git pull --ff-only`, vuelve a compilar y ejecuta el nuevo instalador. Conserva tus cambios locales antes de actualizar. El instalador admite reparación y bloquea una revisión técnica anterior. Para desinstalar, cierra Adapta y usa Configuración de Windows o el `Uninstall.exe` de su carpeta de instalación; se conservan preferencias personales.
+Si `makensis` está en PATH, basta `./scripts/installer.ps1`. El script comprueba los hashes del manifiesto de voz, publica una carpeta autocontenida en `artifacts/net10.0-windows-win-x64-contained/`, ejecuta los checks del paquete, conserva licencias y genera una lista de borrado específica para NSIS. El instalador no habilita inicio con Windows ni eleva la app al terminar.
 
-Estos comandos describen el flujo Windows. En macOS sólo se puede compilar de forma cruzada y ejecutar las comprobaciones portables; no se ejecutan WPF, Win32 ni el instalador. Legacy se construye con `-Framework net48` o `-Framework net461` según la tabla de compatibilidad y necesita su runtime instalado, sin `-SelfContained`.
+Para actualizar las fuentes, conserva tus cambios locales, ejecuta `git pull --ff-only` y repite compilación y empaquetado. No publiques un instalador como validado sin las pruebas Windows pendientes.
 
-## Privacidad y autoría
+## Tutorial: de la primera orden al uso diario
 
-Preferencias con reemplazo seguro en `%LOCALAPPDATA%\AdaptaPELite\settings.json`; recuperación de filtro en la misma carpeta. No guarda grabaciones, transcripciones, capturas ni claves. No incluye integración IA ni telemetría remota. Las búsquedas web comparten la consulta con el sitio como navegación normal. No sustituye todas las funciones de Narrador/NVDA.
+### Activar voz y comprobar el micrófono
 
-© 2026 **Rodrigo Alejandro Apcho Aliaga — TheAlejo160**. Se conservan [LICENSE](LICENSE), [LICENSE.txt](LICENSE.txt) y [avisos de terceros](THIRD_PARTY_NOTICES.md). El proyecto mantiene Creative Commons Atribución-NoComercial-CompartirIgual 4.0; componentes de terceros conservan sus licencias. [Licencia oficial](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es).
+El primer inicio deja voz, filtro e inicio con Windows apagados. Abre **Asistente de voz** y despliega **Dispositivos y reconocimiento**. Allí están **Micrófono**, **Reconocimiento de voz** y **Nombre para llamar al asistente**.
 
-Se utilizaron herramientas de inteligencia artificial generativa para asistencia en código, documentación y recursos gráficos del proyecto, bajo diseño, integración y supervisión del autor. El logo Lite recibido se conserva íntegro; su empaquetado no redibuja la imagen.
+1. Elige el micrófono; puedes usar **Dispositivos de sonido** para revisar la entrada de Windows.
+2. Pulsa **Permiso del micrófono**. En Windows 11 revisa Configuración → Privacidad y seguridad → Micrófono; en Windows 10, Configuración → Privacidad → Micrófono. Permite el acceso al micrófono para aplicaciones de escritorio si la política del equipo lo permite.
+3. Marca **Activar voz** y espera a que el estado indique SAPI o voz local lista. **Señal del micrófono** muestra si llega audio.
+4. Di «Computadora, abre Bloc de notas». Después, enfoca su campo de texto y di «Computadora, escribe Hola, José».
 
-Comprobaciones de esta entrega: 335 sin sensores y 340 con inspección del paquete. Compilación cruzada de `net10.0-windows`, `net48` y `net461`; Una consulta inicial de vulnerabilidades NuGet no estuvo disponible; la compilación final termina sin errores ni advertencias. Instalador local x64 generado; ejecución e instalación Windows pendientes.
+Puedes decir sólo «Computadora»: una señal abre ocho segundos para dar la orden. La palabra predeterminada también admite «Computadoras» y «Computador». Si eliges un nombre personal, de 1 a 40 caracteres, usa ese nombre; no conserva los alias predeterminados. Cambiar motor, micrófono o palabra mantiene la intención de escucha y espera a liberar el motor anterior. Cambiarlos con voz apagada no la activa.
 
-## Cómo se organiza y ejecuta el código
+Para probar una acción sin reconocimiento, enfoca primero el destino externo, vuelve a ajustes y despliega **Escribir una orden**. Escribe la orden sin activación y pulsa **Ejecutar orden** o Enter. La app conserva el destino externo.
 
-| Archivo o módulo | Responsabilidad |
+### Elegir entre SAPI y Vosk
+
+| Opción de Reconocimiento de voz | Qué utiliza |
 | --- | --- |
-| [App.cs](src/AdaptaPELite/App.cs) | Entrada WPF, instancia única y cierre. |
-| [MainWindow.cs](src/AdaptaPELite/MainWindow.cs) | Compone los motores, sincroniza Ajustes/PiP y ejecuta Detener todo. |
-| [Core/Commands.cs](src/AdaptaPELite/Core/Commands.cs) | Intenciones y frases finitas; normaliza comandos y conserva dictado literal. |
-| [Core/RecognitionSession.cs](src/AdaptaPELite/Core/RecognitionSession.cs) | Ordena cambios de voz y descarta inicios/callbacks antiguos. |
-| [Windows/Voice.cs](src/AdaptaPELite/Windows/Voice.cs) | Selecciona SAPI/Vosk y coordina escucha, TTS y recuperación. |
-| [Windows/Actions.cs](src/AdaptaPELite/Windows/Actions.cs) | Ejecuta intenciones contra una aplicación externa y comunica el resultado. |
-| [Windows/DesktopAccess.cs](src/AdaptaPELite/Windows/DesktopAccess.cs) | Consulta UI Automation, campos, selección y lectura manual con destino verificado. |
-| `Core/` restante | Catálogo de sitios, alias, activación y matrices. |
-| `Windows/` restante | Entrada Win32, aplicaciones, filtros, preferencias y capacidades del sistema. |
-| [scripts/installer.ps1](scripts/installer.ps1) y [scripts/installer.nsi](scripts/installer.nsi) | Publican un paquete autocontenido y generan instalación/desinstalación por usuario. |
+| Automático · SAPI o local incluido | Prefiere un reconocedor SAPI español instalado; permite fallback a Vosk local. |
+| Local incluido · español | Vosk 0.3.45 y modelo español pequeño, cargados bajo demanda. |
+| SAPI instalado en Windows | Requiere reconocedor español con dictado; muestra el error si no está disponible. |
 
-Una orden pasa por **captura → reconocimiento → activación «Computadora» → parser → Actions → UIA/Win32 → respuesta**. `MainWindow.Run` muestra la intención detectada; sólo la respuesta posterior acredita la acción. El destino externo se conserva aunque se abra PiP. Las opciones ambiguas se cancelan si cambia la aplicación; las contraseñas se excluyen.
+SAPI enumera los reconocedores reales y prefiere la cultura española del usuario cuando existe; no presupone `es-PE`. Revisa las opciones de idioma/voz de Windows si quieres utilizar SAPI. Instalar una voz de síntesis o un paquete de idioma no garantiza que aparezca un reconocedor SAPI compatible con dictado. Si falta, elige **Local incluido · español**.
 
-Cambiar micrófono/motor invalida la sesión anterior y espera su liberación. **Detener todo** invalida arranques pendientes, cancela acciones/elecciones, detiene escucha y TTS, retira el filtro propio y recuerda módulos apagados. **Salir** libera recursos conservando preferencias.
+La síntesis de respuestas usa voces instaladas en Windows y prefiere una española. Reconocimiento y síntesis son componentes distintos. Si falla la salida hablada, permanece la respuesta escrita. El modelo Vosk se libera al apagarlo; suele producir texto sin puntuación ni capitalización automática. Las reglas españolas del parser no equivalen a reconocimiento acústico en seis idiomas.
 
-El [mapa de código](docs/MEMORIA-CODIGO.md) amplía los contratos y límites del índice. El grafo es una ayuda de navegación; las fuentes, manifiestos y NSIS son la referencia para verificar el comportamiento. `.codebase-memory/` es memoria local regenerable y se excluye de Git. Las pruebas, licencias y recursos necesarios sí se publican.
+### Abrir aplicaciones, sitios y búsquedas
 
-## Numeración unificada
+Precede estas órdenes con «Computadora» o el nombre elegido:
 
-Por indicación del autor, Base y Lite usan la versión pública **1.0** en el producto, interfaz, panel, instalador, Configuración de Windows y nombre del archivo. La interfaz lee la versión informativa del ensamblado; no mantiene etiquetas duplicadas independientes.
-
-La revisión técnica de archivo **1.0.3.0** ordena las actualizaciones sin cambiar la versión pública. El instalador guarda `DisplayVersion=1.0` y `BuildVersion=1.0.3.0`; compara la revisión para actualizar/reparar y bloquear paquetes anteriores. Acepta las instalaciones previas que sólo registraron `DisplayVersion` o tienen un EXE en la ubicación propia. Se conserva la protección frente a una revisión superior, las preferencias y los accesos elegidos.
-
-Compilación y empaquetado desde macOS; la migración del registro y ejecución del instalador requieren Windows real.
-
-Verificación de la numeración unificada: 343 comprobaciones aprobadas sobre el paquete, incluida versión de producto 1.0 y revisión de archivo 1.0.3.0. Compilación cruzada sin errores ni advertencias en los tres targets; fuentes NSIS y migración de claves revisadas directamente. Instalación/actualización, WPF y reconocimiento con micrófono permanecen pendientes en Windows.
-
-## Verificación de la documentación
-
-El 3 de octubre de 2026 se revisaron README, recursos y exclusiones de Git. Pasaron 335 comprobaciones portables y 343 al inspeccionar el paquete local, incluidas las exclusiones Lite. No se ejecutaron WPF, micrófono ni instalador en Windows durante esta revisión documental.
-
-## Proyectos de la familia Adapta PE
-
-| Programa | Código y alcance |
+| Objetivo | Ejemplos |
 | --- | --- |
-| Extensión Base | [Adapta-PE](https://github.com/TheAlejo160/Adapta-PE): voz, filtros, cursor de página y TalkBack. |
-| Extensión Lite | [Adapta-PE-Lite](https://github.com/TheAlejo160/Adapta-PE-Lite): voz y filtros. |
-| Windows Base | [Adapta-PE-Win](https://github.com/TheAlejo160/Adapta-PE-Win): aplicación WPF independiente. |
-| Windows Lite | [Adapta-PE-Lite-Win](https://github.com/TheAlejo160/Adapta-PE-Lite-Win): voz, lectura manual y filtros. |
-| macOS completo | [Adapta-PE-MacOS-Intel-Apple-Silicon-](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-): sólo Adapta PE completo, con su proyecto Xcode. Lite tiene repositorio y fuentes independientes. |
-| macOS Lite independiente | [Adapta-PE-Lite-MacOS](https://github.com/TheAlejo160/Adapta-PE-Lite-MacOS): voz y siete filtros en una aplicación autónoma. |
+| Abrir una app | «abre Bloc de notas», «por favor abre Chrome» |
+| Cambiar de ventana | «muestra apps abiertas», «cambia a Discord», «trae Chrome al frente» |
+| Cerrar una app | «cierra Bloc de notas», «me puedes cerrar la app Google por favor» |
+| Abrir un sitio explícito | «abre la página de Google», «abre YouTube en nueva pestaña» |
+| Buscar | «busca movilidad en Wikipedia», «busca accesibilidad en YouTube» |
+| Navegar | «nueva pestaña», «reabre la pestaña», «muestra descargas», «recarga», «atrás» |
+| Atajos Windows | «guarda el documento», «copiar», «pegar», «muestra el escritorio», «presiona control shift N» |
 
-Los números de versión y permisos pertenecen a cada plataforma. Un ZIP de la extensión no instala la aplicación de escritorio. Los repositorios publican fuentes y recursos necesarios; los instaladores generados y la configuración personal quedan fuera de Git.
+El catálogo de aplicaciones combina Inicio, App Paths y ventanas abiertas. Abrir una app ya abierta puede enfocar su ventana. Google/Chrome/crom identifican Chrome para aplicaciones; «abre la página de Google» pide el sitio de forma explícita. El cierre comprueba ventana y proceso y solicita `WM_CLOSE`; no fuerza la terminación ni evita la confirmación de documentos sin guardar.
 
-### Paquetes locales de prueba: 17 de octubre de 2026
+El [catálogo de sitios](src/AdaptaPELite/Core/Commands.cs) conserva 28 entradas: Google, YouTube, Mercado Libre, Amazon, Wikipedia, Facebook, Instagram, X/Twitter, Reddit, Netflix, Twitch, GitHub, ChatGPT, Claude, Gemini, Canvas, Gmail, Outlook, WhatsApp, Telegram, Drive, Documentos de Google, Mapas, LinkedIn, TikTok, Spotify, Bing y DuckDuckGo. Abrir una web de IA no integra su IA en Lite. Las URLs admiten sólo HTTP/HTTPS; las consultas se codifican para navegación web. Según el navegador y destino, la búsqueda contextual puede volver a Google.
 
-Se recompiló net10.0-windows para win-x64 autocontenido y se generó el instalador NSIS con los recursos y licencias actuales. IncludeSourceRevisionInInformationalVersion=false conserva ProductVersion exactamente 1.0, sin sufijo Git, como exige el check de paquete; FileVersion sigue siendo 1.0.3.0. Se verificaron hashes de recursos, checks portables, integridad del archivo NSIS y correspondencia de la DLL incluida con la recién compilada. Esto no acredita instalación/desinstalación, WPF, sensores o voz en Windows. No tiene firma Authenticode.
+### Dictar, elegir y actuar sobre controles
+
+Enfoca una aplicación externa antes de actuar. Prueba con campos sin datos sensibles:
+
+1. Di «Computadora, muestra campos» para localizar campos accesibles.
+2. Si aparecen opciones, di «elige dos» o «la segunda», o pulsa una opción del panel. No necesitas repetir activación para una elección pendiente.
+3. Di «Computadora, escribe Hola, José! en el campo Nombre» si la aplicación publica un campo con ese nombre.
+4. Para un botón, di «Computadora, selecciona Contacto» y después «Computadora, pulsa lo seleccionado». También puedes pedir «enfoca Nombre» o «selecciona el texto Buenos días».
+
+Las opciones se muestran en páginas de hasta seis: «siguiente» y «anterior» cambian de página; «cancelar» abandona la acción. Caducan tras 45 segundos y se cancelan si cambias de aplicación. Los nombres aproximados requieren elección, incluso con una sola posibilidad.
+
+«Escribe» o «dicta» conserva el texto que sigue, incluidos Unicode, signos, mayúsculas y palabras como «por favor» recibidas del reconocedor. El parser admite cortesía y conjugaciones en órdenes, como «quiero que abras Bloc de notas». Las partículas finales ambiguas «pe», «pues», «ya pe» y «ya pues» sólo se retiran con coma: «busca Adapta PE» conserva PE; «abre Bloc de notas, pe» retira la cortesía.
+
+«Clic», «clic derecho» y «doble clic» son acciones inmediatas del asistente; coloca el cursor sobre la aplicación de destino. «Muestra comandos» y «ejecuta la acción Exportar PDF» consultan acciones que la app publique por UI Automation. Su disponibilidad depende de cada programa. Lite no convierte una orden en PowerShell, `cmd.exe`, scripts o argumentos arbitrarios.
+
+### Leer y detener la lectura
+
+Enfoca la ventana que quieres leer y di «Computadora, lee la pantalla» o «Computadora, léeme la pantalla». Para un elemento concreto, prueba «Computadora, lee el botón Contacto».
+
+La lectura usa contenido accesible de la ventana externa mediante UI Automation. No hay OCR ni lectura automática al pasar el cursor. Las contraseñas quedan excluidas de lectura, selección y dictado. La función no sustituye todas las capacidades de Narrador o NVDA.
+
+Durante la lectura, repite la activación: **«Computadora, para la lectura»**, «Computadora, silencio» o «Computadora, detén la lectura». Para apagar la escucha, di **«Computadora, apaga el micrófono»**; después tendrás que reactivarla desde ajustes, panel o bandeja. **Detener todo** cancela acciones y elecciones, apaga micrófono y síntesis, retira el filtro propio y recuerda esos módulos apagados. También está disponible con **Ctrl+Shift+S** si Windows permite registrar ese atajo.
+
+### Aplicar un filtro
+
+Abre **Filtros de color** y elige **Filtro de pantalla**, o di «Computadora, filtro deuteranopía». Están disponibles protanomalía, protanopía, deuteranomalía, deuteranopía, tritanomalía, tritanopía y acromatopsia. **Quitar filtro**, **Sin filtro** o «Computadora, quitar filtro» retiran el efecto propio.
+
+Las siete matrices son simulaciones visuales, no una corrección médica del daltonismo. Windows 8 o posterior usa un efecto global de Magnification API para el escritorio y todos los monitores, sin captura continua para ese efecto. Windows 7 utiliza una capa de magnificación a 10 FPS pendiente de pruebas reales; no se acredita funcionamiento en juegos exclusivos.
+
+Al restaurar, Lite compara el efecto actual con el que aplicó para evitar sobrescribir cambios de otra ayuda. Intenta recuperar el estado anterior tras un cierre abrupto en el siguiente inicio. Si falla la retirada, reintenta **Detener todo** y revisa el error. La coexistencia con otras ayudas requiere pruebas en Windows.
+
+### Mascota, panel y bandeja
+
+En **Mascota**, elige **Tu mascota**: Tinku (gallito), Cuchu (cuy), Yati (llama) o Sin mascota, que es el valor inicial. Sólo se carga el atlas elegido. Puedes usar **Saludar**, **Dormir**, **Despertar**, **Mover con teclas** y **Otro monitor**. Arrastra su nombre entre pantallas; con el nombre enfocado, usa flechas y Escape. El dibujo deja pasar los clics.
+
+Por voz: «Computadora, mascota Cuchu», «oculta mascota», «saluda mascota», «duerme mascota» y «despierta mascota». Las órdenes completas no interceptan nombres dentro de un dictado o búsqueda. La mascota acompaña activación y órdenes; hablar y leer siguen la síntesis real. Descansa tras 90 segundos sin interacción, sin dormir durante TTS; una acción despierta el descanso automático. Dormir manualmente exige Despertar. Respeta movimiento reducido y suspensión.
+
+Pulsa **Usar panel · PiP**. El panel muestra Voz, transcripción, respuesta, elecciones, **Ajustes** y **Detener todo**. Arrastra su barra de título; en **Ayuda** puedes elegir **Esquina del panel** y **Monitor del panel**. También admite «Computadora, panel esquina superior izquierda». **Mover mascota y panel juntos** coloca la mascota sobre el panel; «une mascota al panel» y «separa mascota del panel» hacen lo mismo por voz. Se recuerda la posición relativa y al separarlos vuelve la posición propia de la mascota.
+
+Cerrar ajustes mantiene la asistencia. El icono de bandeja ofrece **Abrir ajustes**, **Voz: activar / apagar**, **Daltonismo**, **Panel flotante**, **Detener todo** y **Salir**. Salir conserva preferencias para el siguiente arranque; Detener todo recuerda voz y filtro apagados. En **Ayuda**, **Iniciar Adapta PE Lite al entrar en Windows** es voluntario y viene desmarcado. Bloqueo y suspensión detienen asistencia y el retorno comprueba el escritorio de usuario antes de reanudar.
+
+### Si pides una función de Base
+
+«Activa el cursor», «activar TalkBack», «cancelar clic» por permanencia o «pregunta a la IA…» se convierten en `unsupported`. Lite responde: «Adapta PE Lite incluye asistente de voz y filtros. Esa función pertenece a la edición Base». Estas órdenes se resuelven localmente y no pasan al fallback de menús externos.
+
+Considera [Adapta PE para Windows Base](https://github.com/TheAlejo160/Adapta-PE-Win) si necesitas los módulos de cámara/cursor cinético o lectura automática de esa edición. Consulta allí sus requisitos y estado de validación; instalar Base no garantiza que una app o juego admita automatización. Lite conserva voz, lectura manual, filtros y mascotas sin esos módulos.
+
+## Solución de problemas en Windows
+
+| Qué ocurre | Qué revisar |
+| --- | --- |
+| `dotnet` no aparece o falta el SDK | Instala SDK .NET 10, abre otra terminal y revisa `dotnet --info`. El runtime solo no compila. |
+| Falla restauración NuGet | Revisa conexión, proxy o caché. Un aviso de consulta de vulnerabilidades no disponible no acredita una auditoría de paquetes. |
+| No escucha o no se mueve la señal | En Dispositivos y reconocimiento revisa micrófono, Permiso del micrófono y Dispositivos de sonido. Comprueba que otra app o política no bloquee la entrada. |
+| No hay reconocedor SAPI español | Elige Local incluido · español. Una voz TTS instalada no equivale a reconocimiento con dictado. |
+| Vosk no carga o falta una DLL/modelo | Conserva toda la carpeta publicada y `models/speech/`. Usa el paquete x64 completo; no copies DLL de procedencia desconocida. |
+| Entiende mal la orden | Espera al estado listo, repite la activación y compara la transcripción. Prueba Escribir una orden para separar reconocimiento de ejecución. |
+| Aparece Orden detectada pero no actúa | Lee la respuesta posterior: detectar intención no acredita éxito. Enfoca el destino y comprueba que su control sea accesible y editable. |
+| No controla una ventana elevada o UAC | Windows limita entrada por UIPI y escritorio seguro. Usa una app de destino sin elevar cuando sea posible; no desactives UAC ni eleves toda Lite como solución general. |
+| No puede leer un control | Puede ser protegido, inaccesible por UIA o no publicar texto. No hay OCR ni acceso a contraseñas. Un proveedor UIA bloqueado puede no responder inmediatamente a cancelar. |
+| No se oye la respuesta | Revisa salida de sonido y voces instaladas. La respuesta escrita sigue disponible si falla TTS. |
+| Una elección desaparece | Caduca a los 45 segundos o al cambiar la app. Solicita de nuevo los campos/apps y elige una opción vigente. |
+| Otro Adapta PE utiliza los filtros | Retira el filtro en la otra edición antes de aplicarlo en Lite. Si otra ayuda cambió el efecto, retira el propio y vuelve a intentarlo. |
+| No aparece sobre un juego | Prueba ventana sin bordes/pantalla completa de escritorio. Capas y entrada sintética pueden estar restringidas en modo exclusivo o por antitrampas. No se eluden esas protecciones. |
+| Cerré ajustes y sigue escuchando | Es el comportamiento previsto. Usa Detener todo o Salir desde la bandeja. |
+| Ctrl+Shift+S está ocupado | Usa Detener todo en panel, ajustes o bandeja; la app muestra el conflicto del atajo. |
+
+## Cómo funciona y qué datos utiliza
+
+El recorrido de una orden es captura local → reconocimiento → activación → parser → acción → respuesta. Estos son los puntos de entrada del código:
+
+| Fuente | Responsabilidad |
+| --- | --- |
+| [App.cs](src/AdaptaPELite/App.cs) | Entrada WPF, instancia única, cierre y eventos de sesión/pantalla. |
+| [MainWindow.cs](src/AdaptaPELite/MainWindow.cs) | Compone voz, acciones, filtros y mascota; sincroniza ajustes, bandeja, PiP y parada. |
+| [Core/Commands.cs](src/AdaptaPELite/Core/Commands.cs) | Prepara frases, conserva dictado literal, resuelve sitios/intenciones y rechaza órdenes Base. |
+| [Core/RecognitionSession.cs](src/AdaptaPELite/Core/RecognitionSession.cs) | Invalida sesiones anteriores y ordena arranque/liberación de motores. |
+| [Windows/Voice.cs](src/AdaptaPELite/Windows/Voice.cs) | SAPI/Vosk, activación y síntesis con voces Windows. |
+| [Windows/Actions.cs](src/AdaptaPELite/Windows/Actions.cs) | Fija destino externo, elecciones y ejecución de intenciones. |
+| [Windows/DesktopAccess.cs](src/AdaptaPELite/Windows/DesktopAccess.cs) | UI Automation para controles, campos, selección y lectura manual. |
+| [Windows/Filters.cs](src/AdaptaPELite/Windows/Filters.cs) | Magnification API, propiedad del efecto, restauración y recuperación. |
+| [Core/Mascot.cs](src/AdaptaPELite/Core/Mascot.cs) y [Windows/Mascot.cs](src/AdaptaPELite/Windows/Mascot.cs) | Comandos, secuencias, atlas local y ventanas de la mascota. |
+
+WinMM mantiene una captura PCM mono de 16 kHz por sesión, con buffers acotados y ordenados. Cambiar o detener invalida callbacks anteriores. Automático puede cambiar una vez a Local si SAPI termina inesperadamente; SAPI explícito informa el fallo. Las acciones usan patrones UIA cuando están disponibles y entrada Win32 limitada, revalidando destino/foco. El panel propio no sustituye la aplicación externa de destino. Esto depende de lo que cada programa publique, sin equivalencia garantizada con DOM o `chrome.tabs`.
+
+Preferencias: `%LOCALAPPDATA%\AdaptaPELite\settings.json`, con reemplazo seguro y recuperación ante archivo dañado. La recuperación de filtro se guarda en la misma carpeta. No se guardan grabaciones, transcripciones, capturas ni claves; no hay integración IA externa ni telemetría remota. SAPI instalado o Vosk incluido procesan audio localmente. Las búsquedas y aperturas web sí comparten consulta y navegación con el sitio elegido.
+
+No hay cámara, modelos ONNX, OpenCV, preview ni bucle de cursor/lectura automática. Imágenes de marca compartidas y congeladas; recursos de mascotas en `assets/mascotas/`; voz y procedencia/hashes en `assets/models/speech/` y `assets/speech-runtime/`. El [mapa de código](docs/MEMORIA-CODIGO.md) amplía los contratos y límites del índice. El código funciona sin un repositorio Base en una carpeta hermana.
+
+## Comprobaciones y validación pendiente
+
+Desde la raíz, con SDK .NET 10:
+
+```powershell
+./scripts/checks.ps1
+# Equivalente directo:
+dotnet run --project tests/AdaptaPELite.Checks -c Release
+# Inspeccionar además una publicación completa:
+dotnet run --project tests/AdaptaPELite.Checks -c Release -- artifacts/net10.0-windows-win-x64-contained
+```
+
+La última ruta corresponde a `installer.ps1`; si publicaste con `build.ps1`, usa `artifacts/net10.0-windows-win-x64`. Los checks portables cubren parser, alias, dictado Unicode, activación, sesiones, audio, matrices, mascotas, preferencias y exclusiones Lite. Con carpeta publicada inspeccionan tipos y archivos sin ejecutar WPF, incluido el modelo español y ausencia de dependencias de visión. No usan micrófono ni servicios reales.
+
+Sólo en Windows, después de salir de Lite, puedes comprobar arranque y escucha:
+
+```powershell
+./scripts/check-startup.ps1 -Executable ./artifacts/net10.0-windows-win-x64-contained/AdaptaPELite.exe
+# Salir de la app antes del siguiente script, que vuelve a abrirla:
+./scripts/check-voice.ps1 -Executable ./artifacts/net10.0-windows-win-x64-contained/AdaptaPELite.exe
+```
+
+El primero comprueba la aparición de ajustes y deja la app abierta. El segundo activa Voz, exige 30 segundos de estado de escucha y la apaga al terminar. No acredita precisión de dictado: hay que hablar y comprobar resultados en el equipo real.
+
+[VALIDACION-WINDOWS.md](docs/VALIDACION-WINDOWS.md) conserva resultados históricos por entrega, incluidos builds cruzados de los tres targets y comprobaciones portables. Esta revisión del README sólo contrastó fuentes, scripts y documentación desde macOS sin ejecutar .NET. Quedan pendientes Windows real, instalación/actualización/desinstalación, SAPI/Vosk con micrófono, UIA, siete filtros y restauración, convivencia Base/Lite, teclado/lector, DPI mixto, suspensión y rendimiento. Los resultados de macOS o Base no acreditan Lite Windows.
+
+## Autoría, licencia y otras plataformas
+
+© 2026 Rodrigo Alejandro Apcho Aliaga (TheAlejo160). El proyecto mantiene [Creative Commons Atribución-NoComercial-CompartirIgual 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es): consulta [LICENSE](LICENSE), [LICENSE.txt](LICENSE.txt) y [avisos de terceros](THIRD_PARTY_NOTICES.md). Los componentes, modelos y recursos de terceros conservan sus licencias. Lite reutiliza el fondo Base y conserva el logo Lite original; ICO y BMP son derivados de empaquetado.
+
+Se utilizaron herramientas de IA generativa como asistencia en código, documentación y recursos gráficos, bajo diseño, integración y supervisión del autor. Esto no añade un proveedor de IA a la aplicación Lite.
+
+El [sitio oficial de Adapta PE](https://www.adaptape.cc) presenta el proyecto. Para otra plataforma, consulta [macOS Lite](https://github.com/TheAlejo160/Adapta-PE-Lite-MacOS), [macOS Base](https://github.com/TheAlejo160/Adapta-PE-MacOS-Intel-Apple-Silicon-), [extensión Lite](https://github.com/TheAlejo160/Adapta-PE-Lite) o [extensión Base](https://github.com/TheAlejo160/Adapta-PE). Cada una tiene instalación, permisos y validación propios; un ZIP de la extensión no instala esta app Windows.
